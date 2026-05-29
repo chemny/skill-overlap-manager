@@ -8,7 +8,7 @@ import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
+from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 
 STOPWORDS = {
@@ -37,7 +37,7 @@ class Skill:
     path: Path
 
 
-def extract_frontmatter(text: str) -> dict[str, str]:
+def extract_frontmatter(text: str) -> Dict[str, str]:
     if text.startswith("\ufeff"):
         text = text[1:]
     if not text.startswith("---"):
@@ -45,9 +45,9 @@ def extract_frontmatter(text: str) -> dict[str, str]:
     match = re.match(r"^---\s*\n(.*?)\n---\s*(?:\n|$)", text, re.S)
     if not match:
         return {}
-    data: dict[str, str] = {}
-    current_key: str | None = None
-    current_lines: list[str] = []
+    data: Dict[str, str] = {}
+    current_key: Optional[str] = None
+    current_lines: List[str] = []
     for raw_line in match.group(1).splitlines():
         line = raw_line.rstrip()
         key_match = re.match(r"^([A-Za-z0-9_-]+):\s*(.*)$", line)
@@ -64,7 +64,7 @@ def extract_frontmatter(text: str) -> dict[str, str]:
     return data
 
 
-def tokenize(text: str) -> set[str]:
+def tokenize(text: str) -> Set[str]:
     normalized = re.sub(r"[`'\".,;:!?()\[\]{}\\/|，。：；、（）《》“”‘’]+", " ", text.lower())
     words = set()
     for token in normalized.split():
@@ -77,9 +77,9 @@ def tokenize(text: str) -> set[str]:
     return words
 
 
-def load_skills(roots: Iterable[Path]) -> list[Skill]:
-    skills: list[Skill] = []
-    seen: set[tuple[str, str]] = set()
+def load_skills(roots: Iterable[Path]) -> List[Skill]:
+    skills: List[Skill] = []
+    seen: Set[Tuple[str, str]] = set()
     for root in roots:
         if not root.exists():
             continue
@@ -98,7 +98,7 @@ def load_skills(roots: Iterable[Path]) -> list[Skill]:
     return skills
 
 
-def score_overlap(query_name: str, query_text: str, skill: Skill) -> tuple[float, list[str]]:
+def score_overlap(query_name: str, query_text: str, skill: Skill) -> Tuple[float, List[str]]:
     query_tokens = tokenize(f"{query_name} {query_text}")
     skill_tokens = tokenize(f"{skill.name} {skill.directory} {skill.description}")
     if not query_tokens or not skill_tokens:
@@ -113,7 +113,7 @@ def score_overlap(query_name: str, query_text: str, skill: Skill) -> tuple[float
     return score + bonus, common
 
 
-def default_roots() -> list[Path]:
+def default_roots() -> List[Path]:
     configured = os.environ.get("SKILLS_ROOT") or os.environ.get("AGENT_SKILLS_DIR")
     if configured:
         return [Path(os.path.expanduser(configured))]

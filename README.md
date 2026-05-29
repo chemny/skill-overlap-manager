@@ -1,6 +1,6 @@
 # Skill Overlap Manager
 
-> A Codex skill for checking skill overlap before creating or changing local agent skills.
+> An agent skill for checking skill overlap before creating or changing local skills.
 
 [中文 README](README.zh.md) · English
 

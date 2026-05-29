@@ -4,6 +4,10 @@ description: Manage overlap between local agent skills. Use before creating, ins
 version: 0.1.0
 metadata:
   short-description: Check skill overlap before creating or changing skills
+  openclaw:
+    requires:
+      bins:
+        - python3
 ---
 
 # Skill Overlap Manager

@@ -1,6 +1,6 @@
 # Skill Overlap Manager
 
-> 一个用于在创建或修改本地 Agent Skills 前检查能力重叠的 Codex skill。
+> 一个用于在创建或修改本地 Agent Skills 前检查能力重叠的通用 skill。
 
 [English README](README.md) · 中文
 
